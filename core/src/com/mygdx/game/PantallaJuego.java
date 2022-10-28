@@ -20,6 +20,7 @@ public class PantallaJuego implements Screen {
 	private SpriteBatch batch;
 	private Sound explosionSound;
 	private Music gameMusic;
+	private Texture wallpaper;
 	private int score;
 	private int ronda;
 	private int velXAsteroides; 
@@ -40,13 +41,14 @@ public class PantallaJuego implements Screen {
 		this.velXAsteroides = velXAsteroides;
 		this.velYAsteroides = velYAsteroides;
 		this.cantAsteroides = cantAsteroides;
-		
+
+		wallpaper = new Texture(Gdx.files.internal("espacio.png"));
 		batch = game.getBatch();
 		camera = new OrthographicCamera();	
 		camera.setToOrtho(false, 800, 640);
 		//inicializar assets; musica de fondo y efectos de sonido
 		explosionSound = Gdx.audio.newSound(Gdx.files.internal("explosion.ogg"));
-		explosionSound.setVolume(1,0.5f);
+		explosionSound.setVolume(1,0.1f);
 		gameMusic = Gdx.audio.newMusic(Gdx.files.internal("piano-loops.wav")); //
 		
 		gameMusic.setLooping(true);
@@ -78,84 +80,91 @@ public class PantallaJuego implements Screen {
 		game.getFont().draw(batch, "Score:"+this.score, Gdx.graphics.getWidth()-150, 30);
 		game.getFont().draw(batch, "HighScore:"+game.getHighScore(), Gdx.graphics.getWidth()/2-100, 30);
 	}
+
+	public void colisionesBalasYAsteroides(ArrayList<Bullet> balas) {
+		for (int i = 0; i < balas.size(); i++) {
+			Bullet b = balas.get(i);
+			b.update();
+			for (int j = 0; j < balls1.size(); j++) {
+				if (b.checkCollision(balls1.get(j))) {
+					explosionSound.play();
+					balls1.remove(j);
+					balls2.remove(j);
+					j--;
+					score +=10;
+				}
+			}
+			//   b.draw(batch);
+			if (b.isDestroyed()) {
+				balas.remove(b);
+				i--; //para no saltarse 1 tras eliminar del arraylist
+			}
+		}
+	}
+
+	public void colisionesEntreAsteroides(ArrayList<Ball2> balls1, ArrayList<Ball2> balls2) {
+		for (int i=0;i<balls1.size();i++) {
+			Ball2 ball1 = balls1.get(i);
+			for (int j=0;j<balls2.size();j++) {
+				Ball2 ball2 = balls2.get(j);
+				if (i<j) {
+					ball1.checkCollision(ball2);
+				}
+			}
+		}
+	}
+
+	public void colisionesAsteroidesConNave(Nave4 nave, ArrayList<Ball2> balls1, ArrayList<Ball2> balls2) {
+		for (int i = 0; i < balls1.size(); i++) {
+			Ball2 b=balls1.get(i);
+			b.draw(batch);
+			//perdió vida o game over
+			if (nave.checkCollision(b)) {
+				//asteroide se destruye con el choque
+				balls1.remove(i);
+				balls2.remove(i);
+				i--;
+			}
+		}
+	}
+
 	@Override
 	public void render(float delta) {
-		  Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-          batch.begin();
-		  dibujaEncabezado();
-	      if (!nave.estaHerido()) {
-		      // colisiones entre balas y asteroides y su destruccion  
-	    	  for (int i = 0; i < balas.size(); i++) {
-		            Bullet b = balas.get(i);
-		            b.update();
-		            for (int j = 0; j < balls1.size(); j++) {    
-		              if (b.checkCollision(balls1.get(j))) {          
-		            	 explosionSound.play();
-		            	 balls1.remove(j);
-		            	 balls2.remove(j);
-		            	 j--;
-		            	 score +=10;
-		              }   	  
-		  	        }
-		                
-		         //   b.draw(batch);
-		            if (b.isDestroyed()) {
-		                balas.remove(b);
-		                i--; //para no saltarse 1 tras eliminar del arraylist
-		            }
-		      }
-		      //actualizar movimiento de asteroides dentro del area
-		      for (Ball2 ball : balls1) {
-		          ball.update();
-		      }
-		      //colisiones entre asteroides y sus rebotes  
-		      for (int i=0;i<balls1.size();i++) {
-		    	Ball2 ball1 = balls1.get(i);   
-		        for (int j=0;j<balls2.size();j++) {
-		          Ball2 ball2 = balls2.get(j); 
-		          if (i<j) {
-		        	  ball1.checkCollision(ball2);
-		     
-		          }
-		        }
-		      } 
-	      }
-	      //dibujar balas
-	     for (Bullet b : balas) {       
-	          b.draw(batch);
-	      }
-	      nave.draw(batch, this);
-	      //dibujar asteroides y manejar colision con nave
-	      for (int i = 0; i < balls1.size(); i++) {
-	    	    Ball2 b=balls1.get(i);
-	    	    b.draw(batch);
-		          //perdió vida o game over
-	              if (nave.checkCollision(b)) {
-		            //asteroide se destruye con el choque             
-	            	 balls1.remove(i);
-	            	 balls2.remove(i);
-	            	 i--;
-              }   	  
-  	        }
-	      
-	      if (nave.estaDestruido()) {
-  			if (score > game.getHighScore())
-  				game.setHighScore(score);
-	    	Screen ss = new PantallaGameOver(game);
-  			ss.resize(1200, 800);
-  			game.setScreen(ss);
-  			dispose();
-  		  }
-	      batch.end();
-	      //nivel completado
-	      if (balls1.size()==0) {
-			Screen ss = new PantallaJuego(game,ronda+1, nave.getVidas(), score, 
-					velXAsteroides+3, velYAsteroides+3, cantAsteroides+10);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		batch.begin();
+		batch.draw(wallpaper, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		dibujaEncabezado();
+		if (!nave.estaHerido()) {
+			//colisiones entre balas y asteroides y su destrucción
+			colisionesBalasYAsteroides(balas);
+			//actualizar movimiento de asteroides dentro del área
+			for (Ball2 ball : balls1) {ball.update();}
+			//colisiones entre asteroides y sus rebotes
+			colisionesEntreAsteroides(balls1, balls2);
+		}
+		//dibujar balas
+		for (Bullet b : balas) {b.draw(batch);}
+		nave.draw(batch, this);
+		//dibujar asteroides y manejar colisión con nave
+		colisionesAsteroidesConNave(nave, balls1, balls2);
+
+		if (nave.estaDestruido()) {
+			if (score > game.getHighScore())
+				game.setHighScore(score);
+			Screen ss = new PantallaGameOver(game, score);
 			ss.resize(1200, 800);
 			game.setScreen(ss);
 			dispose();
-		  }
-	    	 
+		}
+		batch.end();
+		//nivel completado
+		if (balls1.size()==0) {
+			Screen ss = new PantallaJuego(game,ronda+1, nave.getVidas(), score,
+					velXAsteroides+1, velYAsteroides+1, cantAsteroides+3);
+			ss.resize(1200, 800);
+			game.setScreen(ss);
+			dispose();
+		}
 	}
     
     public boolean agregarBala(Bullet bb) {
@@ -177,7 +186,8 @@ public class PantallaJuego implements Screen {
 	@Override
 	public void pause() {
 		// TODO Auto-generated method stub
-		
+		gameMusic.stop();
+		game.setScreen(new PantallaPausa(game, this));
 	}
 
 	@Override
@@ -197,6 +207,6 @@ public class PantallaJuego implements Screen {
 		// TODO Auto-generated method stub
 		this.explosionSound.dispose();
 		this.gameMusic.dispose();
+		this.wallpaper.dispose();
 	}
-   
 }
