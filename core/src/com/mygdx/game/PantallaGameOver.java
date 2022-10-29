@@ -8,35 +8,35 @@ import com.badlogic.gdx.utils.ScreenUtils;
 
 
 public class PantallaGameOver implements Screen {
-	private SpaceNavigation game;
-	private OrthographicCamera camera;
-	private int score;
+	private final SpaceNavigation GAME;
+	private final OrthographicCamera CAMERA;
+	private final int SCORE;
 
 	public PantallaGameOver(SpaceNavigation game, int score) {
-		this.game = game;
-		this.score = score;
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false, 1200, 800);
+		this.GAME = game;
+		this.SCORE = score;
+		CAMERA = new OrthographicCamera();
+		CAMERA.setToOrtho(false, 1200, 800);
 	}
 
 	@Override
 	public void render(float delta) {
 		ScreenUtils.clear(0, 0, 0.2f, 1);
 
-		camera.update();
-		game.getBatch().setProjectionMatrix(camera.combined);
+		CAMERA.update();
+		GAME.getBatch().setProjectionMatrix(CAMERA.combined);
 
-		game.getBatch().begin();
-		game.getFont().draw(game.getBatch(), "Game Over !!! ", 120, 400,400,1,true);
-		game.getFont().draw(game.getBatch(), "Puntaje alcanzado: " + score + " puntos ", 120, 350);
-		game.getFont().draw(game.getBatch(), "Pincha en cualquier lado para reiniciar ...", 100, 300);
+		GAME.getBatch().begin();
+		GAME.getFont().draw(GAME.getBatch(), "Game Over !!! ", 120, 400,400,1,true);
+		GAME.getFont().draw(GAME.getBatch(), "Puntaje alcanzado: " + SCORE + " puntos ", 120, 350);
+		GAME.getFont().draw(GAME.getBatch(), "Pincha en cualquier lado para reiniciar ...", 100, 300);
 
-		game.getBatch().end();
+		GAME.getBatch().end();
 
 		if (Gdx.input.isTouched() || Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)) {
-			Screen ss = new PantallaJuego(game,1,3,0,1,1,10);
+			Screen ss = new PantallaJuego(GAME,1,3,0,1,1,10);
 			ss.resize(1200, 800);
-			game.setScreen(ss);
+			GAME.setScreen(ss);
 			dispose();
 		}
 	}

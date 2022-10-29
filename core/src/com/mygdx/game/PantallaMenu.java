@@ -6,30 +6,30 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.ScreenUtils;
 public class PantallaMenu implements Screen {
-	private SpaceNavigation game;
-	private OrthographicCamera camera;
+	private final SpaceNavigation GAME;
+	private final OrthographicCamera CAMERA;
 	public PantallaMenu(SpaceNavigation game) {
-		this.game = game;
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false, 1200, 800);
+		this.GAME = game;
+		CAMERA = new OrthographicCamera();
+		CAMERA.setToOrtho(false, 1200, 800);
 	}
 	@Override
 	public void render(float delta) {
 		ScreenUtils.clear(0, 0, 0.2f, 1);
 
-		camera.update();
-		game.getBatch().setProjectionMatrix(camera.combined);
+		CAMERA.update();
+		GAME.getBatch().setProjectionMatrix(CAMERA.combined);
 
-		game.getBatch().begin();
-		game.getFont().draw(game.getBatch(), "Bienvenido a Space Navigation !", 140, 400);
-		game.getFont().draw(game.getBatch(), "Pincha en cualquier lado o presiona cualquier tecla para comenzar ...", 100, 300);
+		GAME.getBatch().begin();
+		GAME.getFont().draw(GAME.getBatch(), "Bienvenido a Space Navigation !", 140, 400);
+		GAME.getFont().draw(GAME.getBatch(), "Pincha en cualquier lado o presiona cualquier tecla para comenzar ...", 100, 300);
 
-		game.getBatch().end();
+		GAME.getBatch().end();
 
 		if (Gdx.input.isTouched() || Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)) {
-			Screen ss = new PantallaJuego(game,1,3,0,1,1,5);
+			Screen ss = new PantallaJuego(GAME,1,3,0,1,1,5);
 			ss.resize(1200, 800);
-			game.setScreen(ss);
+			GAME.setScreen(ss);
 			dispose();
 		}
 	}

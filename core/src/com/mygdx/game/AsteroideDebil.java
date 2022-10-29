@@ -14,12 +14,12 @@ public class AsteroideDebil extends Asteroide {
     }
     public void update() {
         setX(getX() + getXSpeed());
-        setY(getY() + getySpeed());
+        setY(getY() + getYSpeed());
 
         if (getX() + getXSpeed() < 0 || getX() + getXSpeed()+getSpr().getWidth() > Gdx.graphics.getWidth())
             setXSpeed(getXSpeed() * -1);
-        if (getY()+getySpeed() < 0 || getY()+getySpeed()+getSpr().getHeight() > Gdx.graphics.getHeight())
-            setySpeed(getySpeed() * -1);
+        if (getY()+getYSpeed() < 0 || getY()+getYSpeed()+getSpr().getHeight() > Gdx.graphics.getHeight())
+            setYSpeed(getYSpeed() * -1);
         getSpr().setPosition(getX(), getY());
     }
     public int getVidas() {

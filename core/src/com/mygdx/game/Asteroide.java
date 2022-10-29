@@ -28,7 +28,7 @@ public abstract class Asteroide {
 
         spr.setPosition(x, y);
         this.setXSpeed(xSpeed);
-        this.setySpeed(ySpeed);
+        this.setYSpeed(ySpeed);
     }
     public Rectangle getArea()  {
         return spr.getBoundingRectangle();
@@ -45,10 +45,10 @@ public abstract class Asteroide {
             setXSpeed(- getXSpeed());
             a.setXSpeed(-a.getXSpeed());
 
-            if (getySpeed() ==0) setySpeed(getySpeed() + a.getySpeed()/2);
-            if (a.getySpeed() ==0) a.setySpeed(a.getySpeed() + getySpeed()/2);
-            setySpeed(- getySpeed());
-            a.setySpeed(- a.getySpeed());
+            if (getYSpeed() ==0) setYSpeed(getYSpeed() + a.getYSpeed()/2);
+            if (a.getYSpeed() ==0) a.setYSpeed(a.getYSpeed() + getYSpeed()/2);
+            setYSpeed(- getYSpeed());
+            a.setYSpeed(- a.getYSpeed());
         }
     }
     public int getXSpeed() {
@@ -57,10 +57,10 @@ public abstract class Asteroide {
     public void setXSpeed(int xSpeed) {
         this.xSpeed = xSpeed;
     }
-    public int getySpeed() {
+    public int getYSpeed() {
         return ySpeed;
     }
-    public void setySpeed(int ySpeed) {
+    public void setYSpeed(int ySpeed) {
         this.ySpeed = ySpeed;
     }
     public int getX() {

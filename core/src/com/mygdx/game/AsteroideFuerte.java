@@ -14,12 +14,12 @@ public class AsteroideFuerte extends Asteroide {
     }
     public void update() {
         setX(getX() + getXSpeed() + 1);
-        setY(getY() + getySpeed() + 1);
+        setY(getY() + getYSpeed() + 1);
 
         if (getX() + getXSpeed() < 0 || getX() + getXSpeed()+getSpr().getWidth() > Gdx.graphics.getWidth())
             setXSpeed(getXSpeed() * -1);
-        if (getY()+getySpeed() < 0 || getY()+getySpeed()+getSpr().getHeight() > Gdx.graphics.getHeight())
-            setySpeed(getySpeed() * -1);
+        if (getY()+getYSpeed() < 0 || getY()+getYSpeed()+getSpr().getHeight() > Gdx.graphics.getHeight())
+            setYSpeed(getYSpeed() * -1);
         getSpr().setPosition(getX(), getY());
     }
 

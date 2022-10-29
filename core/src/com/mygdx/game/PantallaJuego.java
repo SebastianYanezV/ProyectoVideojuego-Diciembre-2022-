@@ -1,7 +1,5 @@
 package com.mygdx.game;
 
-import java.util.ArrayList;
-import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -11,114 +9,74 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.MathUtils;
 
 public class PantallaJuego implements Screen {
-	private SpaceNavigation game;
-	private OrthographicCamera camera;
-	private SpriteBatch batch;
-	private Sound explosionSound;
-	private Music gameMusic;
-	private Texture wallpaper;
+	private final SpaceNavigation GAME;
+	private final SpriteBatch BATCH;
+	private final Sound EXPLOSION_SOUND;
+	private final Music GAME_MUSIC;
+	private final Texture WALLPAPER;
 	private int score;
-	private int ronda;
-	private int velXAsteroides; 
-	private int velYAsteroides; 
-	private int cantAsteroides;
-	private Nave4 nave;
-	private  ArrayList<Ball2> balls1 = new ArrayList<>();
-	private  ArrayList<Ball2> balls2 = new ArrayList<>();
-	private  ArrayList<Bullet> balas = new ArrayList<>();
-	private ArrayList<Asteroide> asteroides1 = new ArrayList<>();
-	private ArrayList<Asteroide> asteroides2 = new ArrayList<>();
+	private final int RONDA;
+	private final int VELX_ASTEROIDES;
+	private final int VELY_ASTEROIDES;
+	private final int CANT_ASTEROIDES;
+	private final Nave NAVE;
+	private final ListaAsteroides LISTA_ASTEROIDES;
 
 	public PantallaJuego(SpaceNavigation game, int ronda, int vidas, int score,  
 			int velXAsteroides, int velYAsteroides, int cantAsteroides) {
-		this.game = game;
-		this.ronda = ronda;
+		this.GAME = game;
+		this.RONDA = ronda;
 		this.score = score;
-		this.velXAsteroides = velXAsteroides;
-		this.velYAsteroides = velYAsteroides;
-		this.cantAsteroides = cantAsteroides;
+		this.VELX_ASTEROIDES = velXAsteroides;
+		this.VELY_ASTEROIDES = velYAsteroides;
+		this.CANT_ASTEROIDES = cantAsteroides;
 
-		wallpaper = new Texture(Gdx.files.internal("espacio.png"));
-		batch = game.getBatch();
-		camera = new OrthographicCamera();	
+		WALLPAPER = new Texture(Gdx.files.internal("espacio.png"));
+		BATCH = game.getBatch();
+		OrthographicCamera camera = new OrthographicCamera();
 		camera.setToOrtho(false, 800, 640);
 		//inicializar assets; musica de fondo y efectos de sonido
-		explosionSound = Gdx.audio.newSound(Gdx.files.internal("explosion.ogg"));
-		explosionSound.setVolume(1,0.1f);
-		gameMusic = Gdx.audio.newMusic(Gdx.files.internal("videoplayback.wav")); //
+		EXPLOSION_SOUND = Gdx.audio.newSound(Gdx.files.internal("explosion.ogg"));
+		EXPLOSION_SOUND.setVolume(1,0.1f);
+		GAME_MUSIC = Gdx.audio.newMusic(Gdx.files.internal("videoplayback.wav")); //
 		
-		gameMusic.setLooping(true);
-		gameMusic.setVolume(0.5f);
-		gameMusic.play();
+		GAME_MUSIC.setLooping(true);
+		GAME_MUSIC.setVolume(0.5f);
+		GAME_MUSIC.play();
 		
 	    // cargar imagen de la nave, 64x64   
-	    nave = new Nave4(Gdx.graphics.getWidth()/2-50,30,new Texture(Gdx.files.internal("MainShip3.png")),
+	    NAVE = new Nave(Gdx.graphics.getWidth()/2-50,30,new Texture(Gdx.files.internal("MainShip3.png")),
 	    				Gdx.audio.newSound(Gdx.files.internal("hurt.ogg")), 
 	    				new Texture(Gdx.files.internal("Rocket2.png")), 
 	    				Gdx.audio.newSound(Gdx.files.internal("pop-sound.mp3"))); 
-        nave.setVidas(vidas);
+        NAVE.setVidas(vidas);
         //crear asteroides
-        Random r = new Random();
-	    /*for (int i = 0; i < cantAsteroides; i++) {
-	        Ball2 bb = new Ball2(r.nextInt((int)Gdx.graphics.getWidth()),
-	  	            50+r.nextInt((int)Gdx.graphics.getHeight()-50),
-	  	            20+r.nextInt(10), velXAsteroides+r.nextInt(4), velYAsteroides+r.nextInt(4), 
-	  	            new Texture(Gdx.files.internal("aGreyMedium4.png")));	   
-	  	    balls1.add(bb);
-	  	    balls2.add(bb);
-	  	}*/
-
-		for (int i = 0; i < cantAsteroides; i++) {
-			if (MathUtils.random(0, 10) < 2) {
-				AsteroideFuerte nuevoAsteroide = new AsteroideFuerte(r.nextInt((int)Gdx.graphics.getWidth()),
-						50+r.nextInt((int)Gdx.graphics.getHeight()-50),
-						20+r.nextInt(10), velXAsteroides+r.nextInt(4), velYAsteroides+r.nextInt(4),
-						new Texture(Gdx.files.internal("asteroideFuerte.png")));
-				asteroides1.add(nuevoAsteroide);
-				asteroides2.add(nuevoAsteroide);
-			}
-			else {
-				AsteroideDebil nuevoAsteroide = new AsteroideDebil(r.nextInt((int)Gdx.graphics.getWidth()),
-						50+r.nextInt((int)Gdx.graphics.getHeight()-50),
-						20+r.nextInt(10), velXAsteroides+r.nextInt(4), velYAsteroides+r.nextInt(4),
-						new Texture(Gdx.files.internal("aGreyMedium4.png")));
-				asteroides1.add(nuevoAsteroide);
-				asteroides2.add(nuevoAsteroide);
-			}
-		}
+        //Random r = new Random();
+		LISTA_ASTEROIDES = new ListaAsteroides();
+		LISTA_ASTEROIDES.crearAsteroides(velXAsteroides, velYAsteroides, cantAsteroides);
 	}
     
 	public void dibujaEncabezado() {
-		CharSequence str = "Vidas: "+nave.getVidas()+" Ronda: "+ronda;
-		game.getFont().getData().setScale(2f);		
-		game.getFont().draw(batch, str, 10, 30);
-		game.getFont().draw(batch, "Score:"+this.score, Gdx.graphics.getWidth()-150, 30);
-		game.getFont().draw(batch, "HighScore:"+game.getHighScore(), Gdx.graphics.getWidth()/2-100, 30);
+		CharSequence str = "Vidas: " + NAVE.getVidas()+ " Ronda: " + RONDA;
+		GAME.getFont().getData().setScale(2f);
+		GAME.getFont().draw(BATCH, str, 10, 30);
+		GAME.getFont().draw(BATCH, "Score:"+this.score, Gdx.graphics.getWidth()-150, 30);
+		GAME.getFont().draw(BATCH, "HighScore:"+GAME.getHighScore(), Gdx.graphics.getWidth()/2-100, 30);
 	}
 
-	public void colisionesBalasYAsteroides(ArrayList<Bullet> balas) {
-		for (int i = 0; i < balas.size(); i++) {
-			Bullet b = balas.get(i);
+	public void colisionesBalasYAsteroides(Nave nave, ListaAsteroides listaAsteroides) {
+		for (int i = 0; i < nave.getBalas().size(); i++) {
+			Bullet b = nave.getBalas().get(i);
 			b.update();
-			/*for (int j = 0; j < balls1.size(); j++) {
-				if (b.checkCollision(balls1.get(j))) {
-					explosionSound.play();
-					balls1.remove(j);
-					balls2.remove(j);
-					j--;
-					score +=10;
-				}
-			}*/
-			for (int j = 0; j < asteroides1.size(); j++) {
-				if (b.checkCollision(asteroides1.get(j))) {
-					Asteroide a = asteroides1.get(j);
+			for (int j = 0; j < listaAsteroides.getAsteroides1().size(); j++) {
+				if (b.checkCollision(listaAsteroides.getAsteroides1().get(j))) {
+					Asteroide a = listaAsteroides.getAsteroides1().get(j);
 					if (a.getClass().getSimpleName().equals("AsteroideDebil")) {
-						explosionSound.play();
-						asteroides1.remove(j);
-						asteroides2.remove(j);
+						EXPLOSION_SOUND.play();
+						listaAsteroides.getAsteroides1().remove(j);
+						listaAsteroides.getAsteroides2().remove(j);
 						j--;
 						score +=10;
 					}
@@ -128,60 +86,31 @@ public class PantallaJuego implements Screen {
 							aux.setVidas(1);
 						}
 						else {
-							explosionSound.play();
-							asteroides1.remove(j);
-							asteroides2.remove(j);
+							EXPLOSION_SOUND.play();
+							listaAsteroides.getAsteroides1().remove(j);
+							listaAsteroides.getAsteroides2().remove(j);
 							j--;
-							score +=20;
+							score += 20;
 						}
 					}
 				}
 			}
-			//   b.draw(batch);
 			if (b.isDestroyed()) {
-				balas.remove(b);
+				nave.getBalas().remove(b);
 				i--; //para no saltarse 1 tras eliminar del arraylist
 			}
 		}
 	}
 
-	public void colisionesEntreAsteroides(ArrayList<Asteroide> asteroides1, ArrayList<Asteroide> asteroides2) {
-		for (int i=0;i<asteroides1.size();i++) {
-			Asteroide a = asteroides1.get(i);
-			Asteroide aux1;
-			if (a.getClass().getSimpleName().equals("AsteroideFuerte")) {
-				aux1 = (AsteroideFuerte) a;
-			}
-			else {
-				aux1 = (AsteroideDebil) a;
-			}
-			for (int j=0;j<asteroides2.size();j++) {
-				Asteroide a2 = asteroides1.get(i);
-				if (a2.getClass().getSimpleName().equals("AsteroideFuerte")) {
-					AsteroideFuerte aux2 = (AsteroideFuerte) a2;
-					if (i<j) {
-						aux1.checkCollision(aux2);
-					}
-				}
-				else {
-					AsteroideDebil aux2 = (AsteroideDebil) a2;
-					if (i<j) {
-						aux1.checkCollision(aux2);
-					}
-				}
-			}
-		}
-	}
-
-	public void colisionesAsteroidesConNave(Nave4 nave, ArrayList<Asteroide> asteroides1, ArrayList<Asteroide> asteroides2) {
-		for (int i = 0; i < asteroides1.size(); i++) {
-			Asteroide b = asteroides1.get(i);
-			b.draw(batch);
+	public void colisionesAsteroidesConNave(Nave nave, ListaAsteroides listaAsteroides) {
+		for (int i = 0; i < listaAsteroides.getAsteroides1().size(); i++) {
+			Asteroide b = listaAsteroides.getAsteroides1().get(i);
+			b.draw(BATCH);
 			//perdió vida o game over
 			if (nave.checkCollision(b)) {
 				//asteroide se destruye con el choque
-				asteroides1.remove(i);
-				asteroides2.remove(i);
+				listaAsteroides.getAsteroides1().remove(i);
+				listaAsteroides.getAsteroides2().remove(i);
 				i--;
 			}
 		}
@@ -190,59 +119,46 @@ public class PantallaJuego implements Screen {
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		batch.begin();
-		batch.draw(wallpaper, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		BATCH.begin();
+		BATCH.draw(WALLPAPER, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		dibujaEncabezado();
-		if (!nave.estaHerido()) {
+		if (!NAVE.estaHerido()) {
 			//colisiones entre balas y asteroides y su destrucción
-			colisionesBalasYAsteroides(balas);
+			colisionesBalasYAsteroides(NAVE, LISTA_ASTEROIDES);
 			//actualizar movimiento de asteroides dentro del área
-			for (Asteroide a : asteroides1) {
-				if (a.getClass().getSimpleName().equals("AsteroideFuerte")) {
-					AsteroideFuerte aux = (AsteroideFuerte) a;
-					aux.update();
-				}
-				else {
-					AsteroideDebil aux = (AsteroideDebil) a;
-					aux.update();
-				}
-			}
+			LISTA_ASTEROIDES.actualizarMovimiento();
 			//colisiones entre asteroides y sus rebotes
-			colisionesEntreAsteroides(asteroides1, asteroides2);
+			LISTA_ASTEROIDES.colisionesEntreAsteroides();
 		}
 		//dibujar balas
-		for (Bullet b : balas) {b.draw(batch);}
-		nave.draw(batch, this);
+		for (Bullet b : NAVE.getBalas()) {b.draw(BATCH);}
+		NAVE.draw(BATCH);
 		//dibujar asteroides y manejar colisión con nave
-		colisionesAsteroidesConNave(nave, asteroides1, asteroides2);
+		colisionesAsteroidesConNave(NAVE, LISTA_ASTEROIDES);
 
-		if (nave.estaDestruido()) {
-			if (score > game.getHighScore())
-				game.setHighScore(score);
-			Screen ss = new PantallaGameOver(game, score);
+		if (NAVE.estaDestruido()) {
+			if (score > GAME.getHighScore())
+				GAME.setHighScore(score);
+			Screen ss = new PantallaGameOver(GAME, score);
 			ss.resize(1200, 800);
-			game.setScreen(ss);
+			GAME.setScreen(ss);
 			dispose();
 		}
-		batch.end();
+		BATCH.end();
 		//nivel completado
-		if (asteroides1.size()==0) {
-			Screen ss = new PantallaJuego(game,ronda+1, nave.getVidas(), score,
-					velXAsteroides+1, velYAsteroides+1, cantAsteroides+3);
+		if (LISTA_ASTEROIDES.getAsteroides1().size()==0) {
+			Screen ss = new PantallaJuego(GAME, RONDA + 1, NAVE.getVidas(), score,
+					VELX_ASTEROIDES+1, VELY_ASTEROIDES+1, CANT_ASTEROIDES+3);
 			ss.resize(1200, 800);
-			game.setScreen(ss);
+			GAME.setScreen(ss);
 			dispose();
 		}
 	}
-    
-    public boolean agregarBala(Bullet bb) {
-    	return balas.add(bb);
-    }
 	
 	@Override
 	public void show() {
 		// TODO Auto-generated method stub
-		gameMusic.play();
+		GAME_MUSIC.play();
 	}
 
 	@Override
@@ -254,8 +170,8 @@ public class PantallaJuego implements Screen {
 	@Override
 	public void pause() {
 		// TODO Auto-generated method stub
-		gameMusic.stop();
-		game.setScreen(new PantallaPausa(game, this));
+		GAME_MUSIC.stop();
+		GAME.setScreen(new PantallaPausa(GAME, this));
 	}
 
 	@Override
@@ -273,8 +189,8 @@ public class PantallaJuego implements Screen {
 	@Override
 	public void dispose() {
 		// TODO Auto-generated method stub
-		this.explosionSound.dispose();
-		this.gameMusic.dispose();
-		this.wallpaper.dispose();
+		this.EXPLOSION_SOUND.dispose();
+		this.GAME_MUSIC.dispose();
+		this.WALLPAPER.dispose();
 	}
 }

@@ -6,44 +6,34 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Bullet {
-	private int xSpeed;
-	private int ySpeed;
+	private final int XSPEED;
+	private final int YSPEED;
 	private boolean destroyed = false;
-	private Sprite spr;
+	private final Sprite SPR;
 
 	public Bullet(float x, float y, int xSpeed, int ySpeed, Texture tx) {
-		spr = new Sprite(tx);
-		spr.setPosition(x, y);
-		this.xSpeed = xSpeed;
-		this.ySpeed = ySpeed;
+		SPR = new Sprite(tx);
+		SPR.setPosition(x, y);
+		this.XSPEED= xSpeed;
+		this.YSPEED = ySpeed;
 	}
 	public void update() {
-		spr.setPosition(spr.getX()+xSpeed, spr.getY()+ySpeed);
-		if (spr.getX() < 0 || spr.getX()+spr.getWidth() > Gdx.graphics.getWidth()) {
+		SPR.setPosition(SPR.getX()+XSPEED, SPR.getY()+YSPEED);
+		if (SPR.getX() < 0 || SPR.getX()+SPR.getWidth() > Gdx.graphics.getWidth()) {
 			destroyed = true;
 		}
-		if (spr.getY() < 0 || spr.getY()+spr.getHeight() > Gdx.graphics.getHeight()) {
+		if (SPR.getY() < 0 || SPR.getY()+SPR.getHeight() > Gdx.graphics.getHeight()) {
 			destroyed = true;
 		}
 
 	}
 
 	public void draw(SpriteBatch batch) {
-		spr.draw(batch);
-	}
-
-	public boolean checkCollision(Ball2 b2) {
-		if(spr.getBoundingRectangle().overlaps(b2.getArea())){
-			// Se destruyen ambos
-			this.destroyed = true;
-			return true;
-
-		}
-		return false;
+		SPR.draw(batch);
 	}
 
 	public boolean checkCollision(Asteroide b2) {
-		if(spr.getBoundingRectangle().overlaps(b2.getArea())){
+		if(SPR.getBoundingRectangle().overlaps(b2.getArea())){
 			// Se destruyen ambos
 			this.destroyed = true;
 			return true;

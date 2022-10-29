@@ -8,35 +8,35 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class PantallaPausa implements Screen {
-    private final SpaceNavigation game;
-    private PantallaJuego juego;
-    private SpriteBatch batch;
-    private BitmapFont font;
-    private OrthographicCamera camera;
+    private final SpaceNavigation GAME;
+    private final PantallaJuego JUEGO;
+    private final SpriteBatch BATCH;
+    private final BitmapFont FONT;
+    private final OrthographicCamera CAMERA;
 
     public PantallaPausa (final SpaceNavigation game, PantallaJuego juego) {
-        this.game = game;
-        this.juego = juego;
-        this.batch = game.getBatch();
-        this.font = game.getFont();
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, 1200, 800);
+        this.GAME = game;
+        this.JUEGO = juego;
+        this.BATCH = game.getBatch();
+        this.FONT = game.getFont();
+        CAMERA = new OrthographicCamera();
+        CAMERA.setToOrtho(false, 1200, 800);
     }
 
     @Override
     public void render(float delta) {
         ScreenUtils.clear(0, 0, 1.0f, 0.5f);
 
-        camera.update();
-        batch.setProjectionMatrix(camera.combined);
+        CAMERA.update();
+        BATCH.setProjectionMatrix(CAMERA.combined);
 
-        batch.begin();
-        font.draw(batch, "Juego en Pausa ", 100, 150);
-        font.draw(batch, "Toca en cualquier lado para continuar !!!", 100, 100);
-        batch.end();
+        BATCH.begin();
+        FONT.draw(BATCH, "Juego en Pausa ", 100, 150);
+        FONT.draw(BATCH, "Toca en cualquier lado para continuar !!!", 100, 100);
+        BATCH.end();
 
         if (Gdx.input.isTouched()) {
-            game.setScreen(juego);
+            GAME.setScreen(JUEGO);
             dispose();
         }
     }
