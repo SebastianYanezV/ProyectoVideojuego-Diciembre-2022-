@@ -90,6 +90,31 @@ public class Nave4 {
         return false;
     }
 
+    public boolean checkCollision(Asteroide b) {
+        if(!herido && b.getArea().overlaps(spr.getBoundingRectangle())){
+            // rebote
+            if (xVel ==0) xVel += b.getXSpeed()/2;
+            if (b.getXSpeed() ==0) b.setXSpeed(b.getXSpeed() + (int)xVel/2);
+            xVel = - xVel;
+            b.setXSpeed(-b.getXSpeed());
+
+            if (yVel ==0) yVel += b.getySpeed()/2;
+            if (b.getySpeed() ==0) b.setySpeed(b.getySpeed() + (int)yVel/2);
+            yVel = - yVel;
+            b.setySpeed(- b.getySpeed());
+
+            //actualizar vidas y herir
+            vidas--;
+            herido = true;
+            tiempoHerido=tiempoHeridoMax;
+            sonidoHerido.play();
+            if (vidas<=0)
+                destruida = true;
+            return true;
+        }
+        return false;
+    }
+
     public boolean estaDestruido() {
         return !herido && destruida;
     }

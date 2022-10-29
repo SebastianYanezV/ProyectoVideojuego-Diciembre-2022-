@@ -1,6 +1,8 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
@@ -9,8 +11,10 @@ public abstract class Asteroide {
     private int y;
     private int xSpeed;
     private int ySpeed;
+    private Sprite spr;
 
-    public Asteroide(int x, int y, int size, int xSpeed, int ySpeed) {
+    public Asteroide(int x, int y, int size, int xSpeed, int ySpeed, Texture tx) {
+        spr = new Sprite(tx);
         this.x = x;
 
         //validar que borde de esfera no quede fuera
@@ -22,13 +26,31 @@ public abstract class Asteroide {
         if (y-size < 0) this.y = y+size;
         if (y+size > Gdx.graphics.getHeight())this.y = y-size;
 
+        spr.setPosition(x, y);
         this.setXSpeed(xSpeed);
         this.setySpeed(ySpeed);
     }
+    public Rectangle getArea()  {
+        return spr.getBoundingRectangle();
+    }
     public abstract void update();
-    public abstract Rectangle getArea();
-    public abstract void draw(SpriteBatch batch);
-    public abstract void checkCollision(Asteroide a);
+    public void draw(SpriteBatch batch) {
+        spr.draw(batch);
+    }
+    public void checkCollision(Asteroide a) {
+        if(spr.getBoundingRectangle().overlaps(a.spr.getBoundingRectangle())){
+            // rebote
+            if (getXSpeed() ==0) setXSpeed(getXSpeed() + a.getXSpeed()/2);
+            if (a.getXSpeed() ==0) a.setXSpeed(a.getXSpeed() + getXSpeed()/2);
+            setXSpeed(- getXSpeed());
+            a.setXSpeed(-a.getXSpeed());
+
+            if (getySpeed() ==0) setySpeed(getySpeed() + a.getySpeed()/2);
+            if (a.getySpeed() ==0) a.setySpeed(a.getySpeed() + getySpeed()/2);
+            setySpeed(- getySpeed());
+            a.setySpeed(- a.getySpeed());
+        }
+    }
     public int getXSpeed() {
         return xSpeed;
     }
@@ -52,5 +74,11 @@ public abstract class Asteroide {
     }
     public void setY(int y) {
         this.y = y;
+    }
+    public Sprite getSpr() {
+        return spr;
+    }
+    public void setSpr(Sprite spr) {
+        this.spr = spr;
     }
 }
