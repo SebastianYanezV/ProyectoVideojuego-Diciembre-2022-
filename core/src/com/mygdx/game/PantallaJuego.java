@@ -12,11 +12,9 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-
 public class PantallaJuego implements Screen {
-
 	private SpaceNavigation game;
-	private OrthographicCamera camera;	
+	private OrthographicCamera camera;
 	private SpriteBatch batch;
 	private Sound explosionSound;
 	private Music gameMusic;
@@ -26,12 +24,13 @@ public class PantallaJuego implements Screen {
 	private int velXAsteroides; 
 	private int velYAsteroides; 
 	private int cantAsteroides;
-	
 	private Nave4 nave;
 	private  ArrayList<Ball2> balls1 = new ArrayList<>();
 	private  ArrayList<Ball2> balls2 = new ArrayList<>();
 	private  ArrayList<Bullet> balas = new ArrayList<>();
 
+	private ArrayList<Asteroide> asteroides1 = new ArrayList<>();
+	private ArrayList<Asteroide> asteroides2 = new ArrayList<>();
 
 	public PantallaJuego(SpaceNavigation game, int ronda, int vidas, int score,  
 			int velXAsteroides, int velYAsteroides, int cantAsteroides) {
