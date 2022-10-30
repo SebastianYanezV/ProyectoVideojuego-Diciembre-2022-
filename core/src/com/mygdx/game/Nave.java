@@ -10,7 +10,7 @@ import com.badlogic.gdx.math.MathUtils;
 
 import java.util.ArrayList;
 
-public class Nave {
+public class Nave implements Colisionable {
     private boolean destruida = false;
     private int vidas = 3;
     private float xVel = 0;
@@ -72,12 +72,12 @@ public class Nave {
     public boolean checkCollision(Asteroide b) {
         if(!herido && b.getArea().overlaps(SPR.getBoundingRectangle())){
             // rebote
-            if (xVel ==0) xVel += b.getXSpeed()/2;
+            if (xVel ==0) xVel += b.getXSpeed()/2f;
             if (b.getXSpeed() ==0) b.setXSpeed(b.getXSpeed() + (int)xVel/2);
             xVel = - xVel;
             b.setXSpeed(-b.getXSpeed());
 
-            if (yVel ==0) yVel += b.getYSpeed()/2;
+            if (yVel ==0) yVel += b.getYSpeed()/2f;
             if (b.getYSpeed() ==0) b.setYSpeed(b.getYSpeed() + (int)yVel/2);
             yVel = - yVel;
             b.setYSpeed(- b.getYSpeed());
@@ -92,6 +92,20 @@ public class Nave {
             return true;
         }
         return false;
+    }
+
+    public void colisionesAsteroidesConNave(ListaAsteroides listaAsteroides, SpriteBatch BATCH) {
+        for (int i = 0; i < listaAsteroides.getAsteroides1().size(); i++) {
+            Asteroide b = listaAsteroides.getAsteroides1().get(i);
+            b.draw(BATCH);
+            //perdió vida o game over
+            if (checkCollision(b)) {
+                //asteroide se destruye con el choque
+                listaAsteroides.getAsteroides1().remove(i);
+                listaAsteroides.getAsteroides2().remove(i);
+                i--;
+            }
+        }
     }
 
     public boolean estaDestruido() {

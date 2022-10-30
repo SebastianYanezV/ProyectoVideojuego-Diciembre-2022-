@@ -38,7 +38,7 @@ public abstract class Asteroide {
         spr.draw(batch);
     }
     public void checkCollision(Asteroide a) {
-        if(spr.getBoundingRectangle().overlaps(a.spr.getBoundingRectangle())){
+        if(spr.getBoundingRectangle().overlaps(a.getArea())){
             // rebote
             if (getXSpeed() ==0) setXSpeed(getXSpeed() + a.getXSpeed()/2);
             if (a.getXSpeed() ==0) a.setXSpeed(a.getXSpeed() + getXSpeed()/2);

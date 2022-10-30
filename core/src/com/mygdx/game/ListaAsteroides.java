@@ -42,18 +42,9 @@ public class ListaAsteroides {
         for (int i=0; i < ASTEROIDES_1.size(); i++) {
             Asteroide a = ASTEROIDES_1.get(i);
             for (int j=0; j < ASTEROIDES_2.size(); j++) {
-                Asteroide a2 = ASTEROIDES_1.get(i);
-                if (a2.getClass().getSimpleName().equals("AsteroideFuerte")) {
-                    AsteroideFuerte aux2 = (AsteroideFuerte) a2;
-                    if (i<j) {
-                        a.checkCollision(aux2);
-                    }
-                }
-                else {
-                    AsteroideDebil aux2 = (AsteroideDebil) a2;
-                    if (i<j) {
-                        a.checkCollision(aux2);
-                    }
+                Asteroide a2 = ASTEROIDES_2.get(j);
+                if (i<j) {
+                    a.checkCollision(a2);
                 }
             }
         }

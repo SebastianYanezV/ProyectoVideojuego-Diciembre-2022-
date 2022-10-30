@@ -53,7 +53,6 @@ public class PantallaJuego implements Screen {
 	    				Gdx.audio.newSound(Gdx.files.internal("pop-sound.mp3"))); 
         NAVE.setVidas(vidas);
         //crear asteroides
-        //Random r = new Random();
 		LISTA_ASTEROIDES = new ListaAsteroides();
 		LISTA_ASTEROIDES.crearAsteroides(velXAsteroides, velYAsteroides, cantAsteroides);
 	}
@@ -63,57 +62,7 @@ public class PantallaJuego implements Screen {
 		GAME.getFont().getData().setScale(2f);
 		GAME.getFont().draw(BATCH, str, 10, 30);
 		GAME.getFont().draw(BATCH, "Score:"+this.score, Gdx.graphics.getWidth()-150, 30);
-		GAME.getFont().draw(BATCH, "HighScore:"+GAME.getHighScore(), Gdx.graphics.getWidth()/2-100, 30);
-	}
-
-	public void colisionesBalasYAsteroides(Nave nave, ListaAsteroides listaAsteroides) {
-		for (int i = 0; i < nave.getBalas().size(); i++) {
-			Bullet b = nave.getBalas().get(i);
-			b.update();
-			for (int j = 0; j < listaAsteroides.getAsteroides1().size(); j++) {
-				if (b.checkCollision(listaAsteroides.getAsteroides1().get(j))) {
-					Asteroide a = listaAsteroides.getAsteroides1().get(j);
-					if (a.getClass().getSimpleName().equals("AsteroideDebil")) {
-						EXPLOSION_SOUND.play();
-						listaAsteroides.getAsteroides1().remove(j);
-						listaAsteroides.getAsteroides2().remove(j);
-						j--;
-						score +=10;
-					}
-					else {
-						AsteroideFuerte aux = (AsteroideFuerte) a;
-						if (aux.getVidas() == 2) {
-							aux.setVidas(1);
-						}
-						else {
-							EXPLOSION_SOUND.play();
-							listaAsteroides.getAsteroides1().remove(j);
-							listaAsteroides.getAsteroides2().remove(j);
-							j--;
-							score += 20;
-						}
-					}
-				}
-			}
-			if (b.isDestroyed()) {
-				nave.getBalas().remove(b);
-				i--; //para no saltarse 1 tras eliminar del arraylist
-			}
-		}
-	}
-
-	public void colisionesAsteroidesConNave(Nave nave, ListaAsteroides listaAsteroides) {
-		for (int i = 0; i < listaAsteroides.getAsteroides1().size(); i++) {
-			Asteroide b = listaAsteroides.getAsteroides1().get(i);
-			b.draw(BATCH);
-			//perdió vida o game over
-			if (nave.checkCollision(b)) {
-				//asteroide se destruye con el choque
-				listaAsteroides.getAsteroides1().remove(i);
-				listaAsteroides.getAsteroides2().remove(i);
-				i--;
-			}
-		}
+		GAME.getFont().draw(BATCH, "HighScore:"+GAME.getHighScore(), Gdx.graphics.getWidth()/2f-100, 30);
 	}
 
 	@Override
@@ -124,7 +73,16 @@ public class PantallaJuego implements Screen {
 		dibujaEncabezado();
 		if (!NAVE.estaHerido()) {
 			//colisiones entre balas y asteroides y su destrucción
-			colisionesBalasYAsteroides(NAVE, LISTA_ASTEROIDES);
+			for (int i = 0; i < NAVE.getBalas().size(); i++) {
+				Bullet b = NAVE.getBalas().get(i);
+				b.update();
+				Colisionable colisionable = b;
+				b.colisionesBalasYAsteroides(LISTA_ASTEROIDES, EXPLOSION_SOUND, this, colisionable);
+				if (b.isDestroyed()) {
+					NAVE.getBalas().remove(b);
+					i--; //para no saltarse 1 tras eliminar del arraylist
+				}
+			}
 			//actualizar movimiento de asteroides dentro del área
 			LISTA_ASTEROIDES.actualizarMovimiento();
 			//colisiones entre asteroides y sus rebotes
@@ -134,7 +92,8 @@ public class PantallaJuego implements Screen {
 		for (Bullet b : NAVE.getBalas()) {b.draw(BATCH);}
 		NAVE.draw(BATCH);
 		//dibujar asteroides y manejar colisión con nave
-		colisionesAsteroidesConNave(NAVE, LISTA_ASTEROIDES);
+		//colisionesAsteroidesConNave(NAVE, LISTA_ASTEROIDES);
+		NAVE.colisionesAsteroidesConNave(LISTA_ASTEROIDES, BATCH);
 
 		if (NAVE.estaDestruido()) {
 			if (score > GAME.getHighScore())
@@ -153,6 +112,13 @@ public class PantallaJuego implements Screen {
 			GAME.setScreen(ss);
 			dispose();
 		}
+	}
+
+	public int getScore() {
+		return score;
+	}
+	public void setScore(int score) {
+		this.score = score;
 	}
 	
 	@Override
