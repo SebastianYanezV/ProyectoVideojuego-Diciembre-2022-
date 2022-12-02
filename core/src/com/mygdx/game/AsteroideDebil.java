@@ -12,6 +12,7 @@ public class AsteroideDebil extends Asteroide {
         setSpr(new Sprite(tx));
         vidas = 1;
     }
+    @Override
     public void update() {
         setX(getX() + getXSpeed());
         setY(getY() + getYSpeed());

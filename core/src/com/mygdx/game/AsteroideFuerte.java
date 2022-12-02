@@ -12,6 +12,7 @@ public class AsteroideFuerte extends Asteroide {
         setSpr(new Sprite(tx));
         vidas = 2;
     }
+    @Override
     public void update() {
         setX(getX() + getXSpeed() + 1);
         setY(getY() + getYSpeed() + 1);

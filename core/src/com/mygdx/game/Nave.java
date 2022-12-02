@@ -33,6 +33,27 @@ public class Nave implements Colisionable {
         SPR.setBounds(x, y, 45, 45);
         BALAS = new ArrayList<>();
     }
+
+    /*private static Nave nave;
+
+    private Nave(int x, int y, Texture tx, Sound soundChoque, Texture txBala, Sound soundBala) {
+        SONIDO_HERIDO = soundChoque;
+        this.SONIDO_BALA = soundBala;
+        this.TX_BALA = txBala;
+        SPR = new Sprite(tx);
+        SPR.setPosition(x, y);
+        //spr.setOriginCenter();
+        SPR.setBounds(x, y, 45, 45);
+        BALAS = new ArrayList<>();
+    }
+
+    public static Nave getInstance(int x, int y, Texture tx, Sound soundChoque, Texture txBala, Sound soundBala){
+        if (nave == null){
+            nave = new Nave(x, y, tx, soundChoque, txBala, soundBala);
+        }
+        return nave;
+    }*/
+
     public void draw(SpriteBatch batch){
         float x =  SPR.getX();
         float y =  SPR.getY();
@@ -69,6 +90,7 @@ public class Nave implements Colisionable {
 
     }
 
+    @Override
     public boolean checkCollision(Asteroide b) {
         if(!herido && b.getArea().overlaps(SPR.getBoundingRectangle())){
             // rebote

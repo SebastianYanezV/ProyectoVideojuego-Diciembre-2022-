@@ -33,6 +33,7 @@ public class Bullet implements Colisionable {
 		SPR.draw(batch);
 	}
 
+	@Override
 	public boolean checkCollision(Asteroide b2) {
 		if(SPR.getBoundingRectangle().overlaps(b2.getArea())){
 			// Se destruyen ambos

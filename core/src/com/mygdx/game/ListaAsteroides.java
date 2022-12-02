@@ -16,7 +16,7 @@ public class ListaAsteroides {
         ASTEROIDES_2 = new ArrayList<>();
     }
 
-    public void crearAsteroides(int velXAsteroides, int velYAsteroides, int cantAsteroides) {
+    /*public void crearAsteroides(int velXAsteroides, int velYAsteroides, int cantAsteroides) {
         Random r = new Random();
         for (int i = 0; i < cantAsteroides; i++) {
             if (MathUtils.random(0, 10) < 2) {
@@ -35,6 +35,33 @@ public class ListaAsteroides {
                 ASTEROIDES_1.add(nuevoAsteroide);
                 ASTEROIDES_2.add(nuevoAsteroide);
             }
+        }
+    }*/
+
+    public void crearAsteroides(int velXAsteroides, int velYAsteroides, int cantAsteroides) {
+        AsteroideFactory factory;
+
+        factory = new AsteroideFuerteFactory();
+        int numAsteroidesFuertes = MathUtils.random(0, cantAsteroides / 2);
+        Random r = new Random();
+        for (int i = 0; i < numAsteroidesFuertes; i++) {
+            AsteroideFuerte nuevoAsteroide = (AsteroideFuerte) factory.createAsteroide(r.nextInt(Gdx.graphics.getWidth()),
+                    50+r.nextInt(Gdx.graphics.getHeight() -50),
+                    20+r.nextInt(10), velXAsteroides+r.nextInt(4), velYAsteroides+r.nextInt(4),
+                    new Texture(Gdx.files.internal("asteroideFuerte.png")));
+            ASTEROIDES_1.add(nuevoAsteroide);
+            ASTEROIDES_2.add(nuevoAsteroide);
+        }
+
+        factory = new AsteroideDebilFactory();
+        int numAsteroidesDebiles = cantAsteroides - numAsteroidesFuertes;
+        for (int i = 0; i < numAsteroidesDebiles; i++) {
+            AsteroideDebil nuevoAsteroide = (AsteroideDebil) factory.createAsteroide(r.nextInt(Gdx.graphics.getWidth()),
+                    50+r.nextInt(Gdx.graphics.getHeight() -50),
+                    20+r.nextInt(10), velXAsteroides+r.nextInt(4), velYAsteroides+r.nextInt(4),
+                    new Texture(Gdx.files.internal("aGreyMedium4.png")));
+            ASTEROIDES_1.add(nuevoAsteroide);
+            ASTEROIDES_2.add(nuevoAsteroide);
         }
     }
 
