@@ -23,18 +23,7 @@ public class Nave implements Colisionable {
     private int tiempoHerido;
     private final ArrayList<Bullet> BALAS;
 
-    public Nave(int x, int y, Texture tx, Sound soundChoque, Texture txBala, Sound soundBala) {
-        SONIDO_HERIDO = soundChoque;
-        this.SONIDO_BALA = soundBala;
-        this.TX_BALA = txBala;
-        SPR = new Sprite(tx);
-        SPR.setPosition(x, y);
-        //spr.setOriginCenter();
-        SPR.setBounds(x, y, 45, 45);
-        BALAS = new ArrayList<>();
-    }
-
-    /*private static Nave nave;
+    private static Nave nave;
 
     private Nave(int x, int y, Texture tx, Sound soundChoque, Texture txBala, Sound soundBala) {
         SONIDO_HERIDO = soundChoque;
@@ -42,7 +31,6 @@ public class Nave implements Colisionable {
         this.TX_BALA = txBala;
         SPR = new Sprite(tx);
         SPR.setPosition(x, y);
-        //spr.setOriginCenter();
         SPR.setBounds(x, y, 45, 45);
         BALAS = new ArrayList<>();
     }
@@ -51,8 +39,10 @@ public class Nave implements Colisionable {
         if (nave == null){
             nave = new Nave(x, y, tx, soundChoque, txBala, soundBala);
         }
+        nave.SPR.setPosition(x, y);
+        nave.destruida = false;
         return nave;
-    }*/
+    }
 
     public void draw(SpriteBatch batch){
         float x =  SPR.getX();
@@ -142,6 +132,7 @@ public class Nave implements Colisionable {
     public int getX() {return (int) SPR.getX();}
     public int getY() {return (int) SPR.getY();}
     public void setVidas(int vidas2) {vidas = vidas2;}
+    public void setDestruida(boolean destruida){this.destruida = destruida;}
     public ArrayList<Bullet> getBalas() {
         ArrayList<Bullet> a = BALAS;
         return a;

@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.MathUtils;
 
 public class PantallaJuego implements Screen {
 	private final SpaceNavigation GAME;
@@ -25,7 +24,7 @@ public class PantallaJuego implements Screen {
 	private final Nave NAVE;
 	private final ListaAsteroides LISTA_ASTEROIDES;
 
-	public PantallaJuego(SpaceNavigation game, int ronda, int vidas, int score,  
+	public PantallaJuego(SpaceNavigation game, int ronda, int vidas, int score,
 			int velXAsteroides, int velYAsteroides, int cantAsteroides) {
 		this.GAME = game;
 		this.RONDA = ronda;
@@ -47,16 +46,10 @@ public class PantallaJuego implements Screen {
 		GAME_MUSIC.setVolume(0.5f);
 		GAME_MUSIC.play();
 
-		//cargar imagen de la nave, 64x64
-	    NAVE = new Nave(Gdx.graphics.getWidth()/2-50,30,new Texture(Gdx.files.internal("MainShip3.png")),
-	    				Gdx.audio.newSound(Gdx.files.internal("hurt.ogg")), 
-	    				new Texture(Gdx.files.internal("Rocket2.png")), 
-	    				Gdx.audio.newSound(Gdx.files.internal("pop-sound.mp3")));
-
-		/*NAVE = Nave.getInstance(Gdx.graphics.getWidth() / 2 - 50, 30, new Texture(Gdx.files.internal("MainShip3.png")),
+		NAVE = Nave.getInstance(Gdx.graphics.getWidth() / 2 - 50, 30, new Texture(Gdx.files.internal("MainShip3.png")),
 				Gdx.audio.newSound(Gdx.files.internal("hurt.ogg")),
 				new Texture(Gdx.files.internal("Rocket2.png")),
-				Gdx.audio.newSound(Gdx.files.internal("pop-sound.mp3")));*/
+				Gdx.audio.newSound(Gdx.files.internal("pop-sound.mp3")));
 
 		NAVE.setVidas(vidas);
         //crear asteroides
