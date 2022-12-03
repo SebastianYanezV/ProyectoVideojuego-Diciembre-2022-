@@ -33,7 +33,17 @@ public class PantallaJuego implements Screen {
 		this.VELY_ASTEROIDES = velYAsteroides;
 		this.CANT_ASTEROIDES = cantAsteroides;
 
-		WALLPAPER = new Texture(Gdx.files.internal("espacio.png"));
+		WallpaperStrategy strategy;
+		if (ronda % 2 == 0) {
+			strategy = new WallpaperRondaPar();
+		}
+		else {
+			strategy = new WallpaperRondaImpar();
+		}
+		Wallpaper wp = new Wallpaper();
+		wp.setWallpaperStrategy(strategy);
+		WALLPAPER = wp.ponerFondo();
+
 		BATCH = game.getBatch();
 		OrthographicCamera camera = new OrthographicCamera();
 		camera.setToOrtho(false, 800, 640);
@@ -120,7 +130,7 @@ public class PantallaJuego implements Screen {
 	public void setScore(int score) {
 		this.score = score;
 	}
-	
+
 	@Override
 	public void show() {
 		// TODO Auto-generated method stub
